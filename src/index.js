@@ -4,6 +4,7 @@ const cors = require("cors")
 const bodyParser = require("body-parser")
 
 const auth0 = require('./routes/auth0Routes')
+const products = require('./routes/productRoutes')
 
 
 const PORT = 5050
@@ -19,6 +20,7 @@ connectMongoDB();
 
 
 app.use('/api/auth0', auth0)
+app.use('/api/products', products)
 
 
 

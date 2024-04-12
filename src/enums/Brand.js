@@ -1,4 +1,4 @@
-export const BrandEnum = Object.freeze({
+const BrandEnum = Object.freeze({
     ROLEX: 'Rolex',
     CARTIER: 'Cartier',
     AUDEMARS_PIGUET: 'Audemars Piguet',
@@ -11,3 +11,5 @@ export const BrandEnum = Object.freeze({
     OGIVAL: 'Ogival',
     OTHER: 'Other'
   });
+
+  module.exports = BrandEnum

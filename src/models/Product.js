@@ -1,5 +1,5 @@
-const CategoryEnum = require("../enum/Category")
-const BrandEnum = require('../enum/Brand')
+const CategoryEnum = require("../enums/Category")
+const BrandEnum = require('../enums/Brand')
 
 const mongoose = require('mongoose');
 const { Schema } = mongoose;
