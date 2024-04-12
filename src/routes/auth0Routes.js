@@ -83,8 +83,7 @@ router.post('/register',[
             phoneNumber,
             email,
             password: hassPassword,
-            address,
-            isAdimn
+            address
         })
 
 

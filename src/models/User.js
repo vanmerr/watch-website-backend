@@ -6,6 +6,10 @@ const UserSchema = new Schema({
         type: String,
         required: true
     },
+    avartarURL : {
+        type: String,
+        default: ''
+    },
     phoneNumber: {
         type: String,
         required: true,
