@@ -4,12 +4,12 @@ const router = express.Router();
 const Product = require('../models/Product')
 
 //get all products
-router.get('/get_all', async (req, res) => {
+router.get('/get-all', async (req, res) => {
     try {
         const products = await Product.find()
         res.status(200).json({data : products})
     } catch (error) {
-        res.status(400).json({ error: `${error}` })
+        res.status(400).json({ message: `${error}` })
     }
 })
 
@@ -20,7 +20,7 @@ router.get('/get/:id', async( req, res) => {
         const product = await Product.findById(id)
         res.status(200).json({data : product})
     } catch (error) {
-        res.status(400).json({ error: `${error}`})
+        res.status(400).json({ message: `${error}`})
     }
 })
 
@@ -31,12 +31,12 @@ router.post('/get/category', async (req, res) => {
         const products = await Product.find({ category: `${category}`})
         res.status(200).json({ data : products})
     } catch (error) {
-        res.status(400).json({ error: `${error}`})
+        res.status(400).json({ message: `${error}`})
     }
 })
 
 // get products by categry and brand
-router.post('/get/category_brand', async ( req, res) => {
+router.post('/get/category-brand', async ( req, res) => {
     const { category, brand} = req.body
     let products
     try {
@@ -52,7 +52,7 @@ router.post('/get/category_brand', async ( req, res) => {
 router.get('/search/:key', async (req, res) => {
     const {key } = req.params
 
-    if(key.length <= 0 ) res.status(400).json({ error: 'Key cannot be empty'})
+    if(key.length <= 0 ) res.status(400).json({ message: 'Key cannot be empty'})
 
     let products
     try {
@@ -70,7 +70,7 @@ router.get('/search/:key', async (req, res) => {
         res.status(200).json({ data: products})
         
     } catch (error) {
-        res.status(400).json({ error: `${error}`})
+        res.status(400).json({ message: `${error}`})
     }
 })
 

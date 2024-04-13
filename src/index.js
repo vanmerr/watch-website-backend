@@ -2,6 +2,7 @@ const connectMongoDB = require("./configs/ConnectMongoDB")
 const express = require("express") 
 const cors = require("cors")
 const bodyParser = require("body-parser")
+const path = require('path')
 
 const auth0 = require('./routes/auth0Routes')
 const products = require('./routes/productRoutes')
@@ -12,7 +13,7 @@ const app = express()
 
 app.use(cors())
 app.use(bodyParser.json())
-
+app.use(express.static(path.join(__dirname, 'assets')))
 
 //connect mongodb
 connectMongoDB();

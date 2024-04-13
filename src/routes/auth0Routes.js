@@ -38,7 +38,7 @@ router.post('/login', [
         }
         
         const data = {
-            userId : user.id
+            id : user.id
         }
 
         const expiresIn = process.env.JWT_EXPIRES_IN
@@ -49,7 +49,7 @@ router.post('/login', [
         res.status(200).json({ token: authToken})
     }
     catch (error) {
-        res.status(500).json({error: "Internal server error"})
+        res.status(500).json({ message: "Internal server error"})
     }
 
 })
@@ -67,12 +67,12 @@ router.post('/register',[
 
     if(!errors.isEmpty()) return res.status(400).json({error: errors.array()})
 
-    const { fullName, phoneNumber, email, password, address, isAdimn} = req.body
+    const { fullName, phoneNumber, email, password, address } = req.body
 
     try {
         const userExists = await User.findOne({ $or: [{ email: email }, { phoneNumber: phoneNumber }] })
 
-        if(userExists) return res.status(400).json({error: 'Sorry a user already exists'})
+        if(userExists) return res.status(400).json({ message: 'Sorry a user already exists'})
 
 
         const salt = await bcrypt.genSalt(10)
@@ -88,7 +88,7 @@ router.post('/register',[
 
 
         const data = {
-            userId : createUserPromise.id
+            id : createUserPromise.id
         }
 
         const expiresIn = process.env.JWT_EXPIRES_IN
@@ -99,18 +99,18 @@ router.post('/register',[
         res.status(201).json({ token: authToken})
 
     } catch (error) {
-        res.status(500).json({error : `Internal server error ${error}`})
+        res.status(500).json({ message : `Internal server error ${error}`})
     }
 })
 
 //logged in user details
-router.get('/getuser', tokenAuthentication, async (req, res) => {
+router.get('/get-user', tokenAuthentication, async (req, res) => {
     try {
-        const user = await User.findById(req.user.userId).select("-password")
+        const user = await User.findById(req.user.id).select("-password")
         res.status(200).json(user)
 
     } catch (error) {
-        res.status(404).json({ error: `${error}`})
+        res.status(404).json({ message: `${error}`})
     }
 })
 
