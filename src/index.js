@@ -5,7 +5,9 @@ const bodyParser = require("body-parser")
 const path = require('path')
 
 const auth0 = require('./routes/auth0Routes')
+const user = require('./routes/userRoutes')
 const products = require('./routes/productRoutes')
+const admin = require('./routes/adminRoutes')
 
 
 const PORT = 5050
@@ -19,9 +21,10 @@ app.use(express.static(path.join(__dirname, 'assets')))
 connectMongoDB();
 
 
-
 app.use('/api/auth0', auth0)
+app.use('/api/users', user)
 app.use('/api/products', products)
+app.use('/api/admin', admin)
 
 
 

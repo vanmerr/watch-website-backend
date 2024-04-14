@@ -7,7 +7,7 @@ const ProductSchema = new Schema({
     name: String,
     brand: { type: String, enum: Object.values(BrandEnum) },
     price: Number,
-    image: String,
+    imageURL: String,
     category: { type: String, enum: Object.values(CategoryEnum) },
     description: String,
     quantity : Number

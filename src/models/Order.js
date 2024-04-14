@@ -1,4 +1,4 @@
-const StatusOrderEnum = require("../enum/StatusOrder")
+const StatusOrderEnum = require("../enums/StatusOrder")
 const mongoose = require('mongoose')
 const { Schema } = mongoose
 
@@ -19,7 +19,7 @@ const OrderSchema = new Schema({
     status:{ 
         type: String, 
         enum: Object.values(StatusOrderEnum),
-        default: 'PENDING'
+        default: 'Pending'
     },
     total : {
         type: Number

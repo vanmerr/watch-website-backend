@@ -6,7 +6,7 @@ const tokenAuthentication = async (req, res, next) => {
 
     const token = req.header('Authorization')
     if (!token) {
-        return res.status(400).json({ message: 'Access denied' })
+        return res.status(400).json({ message: 'Access denied 1' })
     }
     try {
         const data = jwt.verify(token, process.env.JWT_SECRET)
@@ -18,8 +18,7 @@ const tokenAuthentication = async (req, res, next) => {
         req.user = data
         next()
     } catch (error) {
-        res.status(400).json({ message: 'Access denied' })
-
+        return res.status(400).json({ message: 'Access denied' })
     }
 }
 
