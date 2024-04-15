@@ -1,11 +1,15 @@
 const express = require('express');
 const router = express.Router();
 const bcrypt = require('bcrypt')
+const dotenv = require('dotenv')
 
 const Product = require('../models/Product')
 const User = require('../models/User')
 const Order = require('../models/Order')
 const tokenAuthentication = require('../middlewares/auth0Admin');
+const upload = require('../middlewares/fileUpload')
+
+dotenv.config()
 
 // get all user
 router.get('/get-all-user', tokenAuthentication, async (req, res) => {
@@ -18,14 +22,17 @@ router.get('/get-all-user', tokenAuthentication, async (req, res) => {
 });
 
 // post user by admin
-router.post('/add-user', tokenAuthentication, async ( req, res) => {
+router.post('/add-user', tokenAuthentication, upload,  async ( req, res) => {
 
+    let avartarURL = `http://${req.hostname}:${process.env.PORT || 1003}/images/avartar.png`;
 
     const { fullName, phoneNumber, email, password, address, isAdmin } = req.body
     try {
         const userExists = await User.findOne({ $or: [{ email: email }, { phoneNumber: phoneNumber }] })
 
         if ( userExists ) return res.status(400).json({ message: 'Sorry a user already exists'})
+
+        if (req.file) avartarURL = `http://${req.hostname}:${process.env.PORT || 1003}/images/${req.file.filename}`;
 
 
         const salt = await bcrypt.genSalt(10)
@@ -35,6 +42,7 @@ router.post('/add-user', tokenAuthentication, async ( req, res) => {
             fullName,
             phoneNumber,
             email,
+            avartarURL,
             password: hassPassword,
             address,
             isAdmin
@@ -48,18 +56,21 @@ router.post('/add-user', tokenAuthentication, async ( req, res) => {
 })
 
 // update user by admin
-router.put('/update-user', tokenAuthentication, async ( req, res) => {
-    const { id ,fullName, avartarULR, address, isAdmin } = req.body
+router.put('/update-user', tokenAuthentication, upload,  async ( req, res) => {
+    const { id ,fullName, address, isAdmin } = req.body
+    let avartarURL 
 
     let user = await User.findById(id).select('-password')
     if(!user) return res.status(400).json({ message: 'User not found'})
+    if(req.file) avartarURL = `http://${req.hostname}:${process.env.PORT || 1003}/images/${req.file.filename}`
 
     try {
 
-        user.fullName = fullName ? fullName : user.fullName
-        user.avartarURL = avartarULR ? avartarULR : user.avartarURL
-        user.address = address ? address : user.address
-        user.isAdmin = isAdmin ? isAdmin : user.isAdmin
+        user.fullName = fullName || user.fullName
+        user.avartarURL = avartarURL || user.avartarURL
+        user.address = address || user.address
+        user.isAdmin = isAdmin || user.isAdmin
+
 
         await user.save()
 
@@ -83,9 +94,11 @@ router.delete('/delete-user', tokenAuthentication, async ( req, res) => {
 })
 
 // add product by admin
-router.post('/add-product', tokenAuthentication, async ( req, res) => {
-    const { name, brand, price, imageURL, category, description, quantity} = req.body
+router.post('/add-product', tokenAuthentication, upload, async ( req, res) => {
+    const { name, brand, price, category, description, quantity} = req.body
+    let imageURL = `http://${req.hostname}:${process.env.PORT || 1003}/images/product.png`
     try {
+        if ( req.file) imageURL = `http://${req.hostname}:${process.env.PORT || 1003}/images/${req.file.filename}`
         const newProduct = await Product.create({
             name,
             price,
@@ -103,13 +116,16 @@ router.post('/add-product', tokenAuthentication, async ( req, res) => {
     }
 })
 
-// updata product
-router.put('/update-product', tokenAuthentication, async (req, res) => {
-    const { id, name, brand, price, imageURL, category, description, quantity} = req.body
+// update product
+router.put('/update-product', tokenAuthentication, upload, async (req, res) => {
+    const { id, name, brand, price, category, description, quantity} = req.body
+    let imageURL 
+    let 
     try {
         const updateProduct = await Product.findById(id)
 
         if( !updateProduct) res.status(400).json({ message: 'Product not found'})
+        if (req.file) imageURL =  `http://${req.hostname}:${process.env.PORT || 1003}/images/${req.file.filename}`
 
         updateProduct.name = name || updateProduct.name
         updateProduct.brand = brand || updateProduct.brand

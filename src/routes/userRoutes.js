@@ -1,13 +1,15 @@
 const express = require('express')
 const router = express.Router()
-
+const dotenv = require('dotenv')
 
 const User = require('../models/User')
 const tokenAuthentication = require('../middlewares/auth0User')
 const Order = require('../models/Order')
 const Cart = require('../models/Cart')
 const Product = require('../models/Product')
-const { Promise } = require('mongoose')
+const upload = require('../middlewares/fileUpload')
+
+dotenv.config()
 
 
 //logged in user details
@@ -22,19 +24,23 @@ router.get('/get', tokenAuthentication, async (req, res) => {
 })
 
 // update info
-router.put('/update-info', tokenAuthentication , async (req, res) => {
-    const { fullName, avartarURL, address } = req.body
+router.put('/update-info', tokenAuthentication, upload , async (req, res) => {
+    const { fullName, address } = req.body
+    let avartarURL 
     try {
         let user = await User.findById(req.user.id).select('-password')
-        if(!user) return res.status(400).json({ message: 'Access denied'})
-        user.fullName = fullName || user.fullName
-        user.avartarURL = avartarURL || user.avartarURL
-        user.address = address || user.address
-        const result = await user.save()
+        if (!user) return res.status(400).json({ message: 'Access denied' });
+        if (req.file ) avartarURL = `http://${req.hostname}:${process.env.PORT || 1003}/images/${req.file.filename}`
 
-        res.status(200).json({ data : result})
+            user.fullName = fullName || user.fullName;
+            user.address = address || user.address;
+            user.avartarURL = avartarURL || user.avartarURL
+
+
+        const result = await user.save();
+        res.status(200).json({ data: result });
     } catch (error) {
-        res.status(400).json({ message: error})
+        res.status(400).json({ message: error.message });
     }
 })
 

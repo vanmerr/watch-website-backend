@@ -8,6 +8,7 @@ const dotenv = require('dotenv')
 const User = require('../models/User')
 
 
+
 dotenv.config()
 
 
@@ -82,7 +83,8 @@ router.post('/register',[
             phoneNumber,
             email,
             password: hassPassword,
-            address
+            address,
+            avartarURL : `http://${req.hostname}:${process.env.PORT || 1003}/images/avartar.png`
         })
 
 
